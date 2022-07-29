@@ -43,7 +43,7 @@ export class PersonService {
     return null;
   }
 
-  async updadeOne(
+  async updateOne(
     id: number,
     personData: NewPersonDTO,
   ): Promise<PersonDTO | null> {

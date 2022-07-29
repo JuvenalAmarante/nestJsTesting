@@ -5,8 +5,8 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { NewPersonDTO } from '../dto/new-person.dto';
 import { PersonDTO } from '../dto/person.dto';
@@ -38,12 +38,12 @@ export class PersonController {
     return this.personService.deleteOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @HttpCode(204)
   async updateOne(
     @Param('id') id: number,
     @Body() personData: NewPersonDTO,
   ): Promise<PersonDTO | null> {
-    return this.personService.updadeOne(id, personData);
+    return this.personService.updateOne(id, personData);
   }
 }
