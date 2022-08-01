@@ -11,7 +11,7 @@ export class PersonService {
     return this.personRepository.findAll();
   }
 
-  async getOne(id: number): Promise<PersonDTO | null> {
+  async getOne(id: number): Promise<PersonDTO> {
     const person = await this.personRepository.findOne(id);
 
     if (!person)
@@ -20,7 +20,7 @@ export class PersonService {
     return person;
   }
 
-  async store(person: NewPersonDTO): Promise<PersonDTO | null> {
+  async store(person: NewPersonDTO): Promise<PersonDTO> {
     const newPerson = await this.personRepository.store(person);
 
     if (!newPerson)
@@ -32,7 +32,7 @@ export class PersonService {
     return newPerson;
   }
 
-  async deleteOne(id: number): Promise<PersonDTO | null> {
+  async deleteOne(id: number): Promise<null> {
     const person = await this.personRepository.findOne(id);
 
     if (!person)
@@ -43,10 +43,7 @@ export class PersonService {
     return null;
   }
 
-  async updateOne(
-    id: number,
-    personData: NewPersonDTO,
-  ): Promise<PersonDTO | null> {
+  async updateOne(id: number, personData: NewPersonDTO): Promise<null> {
     const person = await this.personRepository.findOne(id);
 
     if (!person)

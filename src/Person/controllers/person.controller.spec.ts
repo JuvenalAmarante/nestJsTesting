@@ -6,7 +6,7 @@ import { PersonController } from './person.controller';
 describe('PersonController', () => {
   let controller: PersonController;
 
-  // Adicionando um novo Mock para subistituir o PersonService
+  // Adicionando um novo Mock para substituir o PersonService
   const mockPersonService = {
     getAll: jest.fn((): PersonDTO[] => [
       {

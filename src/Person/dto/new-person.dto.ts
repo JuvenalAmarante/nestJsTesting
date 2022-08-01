@@ -3,14 +3,20 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class NewPersonDTO {
   @IsString()
-  @ApiProperty()
+  @ApiProperty({
+    description: `O nome completo da pessoa`,
+    example: 'Irineu Campos',
+  })
   name: string;
 
   @IsNumber()
-  @ApiProperty()
+  @ApiProperty({ description: `A idade da pessoa`, example: 37 })
   age: number;
 
   @IsString()
-  @ApiProperty()
+  @ApiProperty({
+    description: `O animal favorito da pessoa`,
+    example: 'Porco-espinho',
+  })
   favoriteAnimal: string;
 }

@@ -6,8 +6,7 @@ describe('PersonRepository', () => {
 
   beforeEach(async () => {
     /**
-     * Cria um novo módulo para realizar os testes, substituindo o PersonRepository pelo Mock
-     * criado acima, utilizando uma forma diferente da apresentada no PersonController
+     * Cria um novo módulo para realizar os testes utilizando o PersonRepository
      */
     const module: TestingModule = await Test.createTestingModule({
       providers: [PersonRepository],

@@ -6,7 +6,7 @@ import { PersonService } from '../services/person.service';
 describe('PersonService', () => {
   let service: PersonService;
 
-  // Adicionando um novo Mock para subistituir o PersonService
+  // Adicionando um novo Mock para substituir o PersonRepository
   const mockPersonRepository = {
     findAll: jest.fn((): PersonDTO[] => [
       {
@@ -22,16 +22,24 @@ describe('PersonService', () => {
         age: 21,
       },
     ]),
-    findOne: jest.fn(
-      (id): PersonDTO => ({
-        id: id,
-        name: 'Juliano Castro',
-        favoriteAnimal: 'Cachorro',
-        age: 25,
-      }),
-    ),
-    store: jest.fn((person) => ({ id: 1, ...person })),
-    update: jest.fn((id, person) => ({ id, ...person })),
+    findOne: jest.fn((id): PersonDTO | null => {
+      if ([1, 2].includes(id))
+        return {
+          id: id,
+          name: 'Juliano Castro',
+          favoriteAnimal: 'Cachorro',
+          age: 25,
+        };
+      else return null;
+    }),
+    store: jest.fn((person) => {
+      if (person.age !== 999) return { id: 1, ...person };
+      else null;
+    }),
+    update: jest.fn((id, person) => {
+      if (id === 1) return { id, ...person };
+      else return null;
+    }),
     delete: jest.fn((id) => id && null),
   };
 
@@ -80,6 +88,13 @@ describe('PersonService', () => {
     });
   });
 
+  it('Precisa retornar um erro caso não encontre os dados de uma pessoa', async () => {
+    await expect(service.getOne(15)).rejects.toHaveProperty(
+      'message',
+      'User not found',
+    );
+  });
+
   it('Precisa criar uma nova pessoa', async () => {
     const dto = { name: 'Irineu Campos', age: 37, favoriteAnimal: 'Vaca' };
 
@@ -91,13 +106,47 @@ describe('PersonService', () => {
     });
   });
 
+  it('Precisa retornar um erro caso não consiga salvar os dados da pessoa', async () => {
+    const dto = { name: 'Irineu Campos', age: 999, favoriteAnimal: 'Vaca' };
+
+    await expect(service.store(dto)).rejects.toHaveProperty(
+      'message',
+      "Couldn't store user",
+    );
+  });
+
   it('Precisa atualizar os dados de uma pessoa', async () => {
     const dto = { name: 'Irineu Campos', age: 37, favoriteAnimal: 'Vaca' };
 
     expect(await service.updateOne(1, dto)).toBeNull();
   });
 
+  it('Precisa retornar um erro caso não consiga encontrar os dados da pessoa para atualizar', async () => {
+    const dto = { name: 'Irineu Campos', age: 37, favoriteAnimal: 'Vaca' };
+
+    await expect(service.updateOne(15, dto)).rejects.toHaveProperty(
+      'message',
+      'User not found',
+    );
+  });
+
+  it('Precisa retornar um erro caso não consiga atualizar os dados da pessoa', async () => {
+    const dto = { name: 'Irineu Campos', age: 37, favoriteAnimal: 'Vaca' };
+
+    await expect(service.updateOne(2, dto)).rejects.toHaveProperty(
+      'message',
+      "Couldn't update user",
+    );
+  });
+
   it('Precisa deletar os dados de uma pessoa', async () => {
     expect(await service.deleteOne(1)).toBeNull();
+  });
+
+  it('Precisa retornar um erro caso não consiga encontrar os dados da pessoa para deletar', async () => {
+    await expect(service.deleteOne(15)).rejects.toHaveProperty(
+      'message',
+      'User not found',
+    );
   });
 });
